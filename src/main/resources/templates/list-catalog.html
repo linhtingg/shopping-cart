@@ -20,34 +20,34 @@
 
     <h3>PUBLISHERS LIST</h3>
     <hr>
-    <a th:href="@{/publisher/showFormForAdd}" class="btn btn-primary btn-sm mb-3">
+    <a th:href="@{/catalog/showFormForAdd}" class="btn btn-primary btn-sm mb-3">
         Add Publisher
     </a>
     <table class="table table-bordered table-striped">
         <thead class="thead-dark">
         <tr>
 
-            <th>Publisher Name</th>
-            <th>Description</th>
+            <th>Name</th>
+            <th>Status</th>
             <th>Action</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="tempPublisher : ${publishers}">
+        <tr th:each="tempPublisher : ${catalog}">
 
-            <td th:text="${tempPublisher.publisher_name}"></td>
-            <td th:text="${tempPublisher.description}"></td>
+            <td th:text="${tempPublisher.name}"></td>
+            <td th:text="${tempPublisher.status}"></td>
             <td>
                 <div sec:authorize="hasAnyRole('USER', 'ADMIN')">
                 <!-- Add "update" button/link -->
-                <a th:href="@{/publisher/showFormForUpdate(publisherId=${tempPublisher.id})}"
+                <a th:href="@{/catalog/showFormForUpdate(id=${tempPublisher.id})}"
                    class="btn btn-info btn-sm">
                     Update
                 </a>
                 </div>
                 <div sec:authorize="hasRole('ADMIN')">
                 <!-- Add "delete" button/link -->
-                <a th:href="@{/publisher/delete(publisherId=${tempPublisher.id})}"
+                <a th:href="@{/catalog/delete(id=${tempPublisher.id})}"
                    class="btn btn-danger btn-sm"
                    onclick="if (!(confirm('Are you sure you want to delete this publisher?'))) return false">
                     Delete

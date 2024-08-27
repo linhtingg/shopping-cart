@@ -1,38 +1,38 @@
 package com.mnb.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.SecurityFilterChain;
+
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+@EnableMethodSecurity
+public class SecurityConfig {
 
-    @Override
-    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeRequests(authorize -> authorize
+                    .anyRequest().authenticated()
+            )
+            .formLogin(form -> form
+                    .loginPage("/login")
+                    .loginProcessingUrl("/index")
+                    .permitAll()
+            )
+            .logout(logout -> logout
+                    .permitAll()
+            )
+            .exceptionHandling(exception -> exception
+                    .accessDeniedPage("/access-denied")
+            );
 
-        // add our users for in memory authentication
-        User.UserBuilder users = User.withDefaultPasswordEncoder();
-        auth.inMemoryAuthentication()
-                .withUser(users.username("bilal").password("test123").roles("USER"))
-                .withUser(users.username("merve").password("test123").roles("USER", "ADMIN"));
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-             .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .loginProcessingUrl("/index")
-                .permitAll()
-                .and()
-                .logout().permitAll()
-                .and()
-                .exceptionHandling().accessDeniedPage("/access-denied");
+        return http.build();
 
     }
 }
